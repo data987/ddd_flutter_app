@@ -115,6 +115,7 @@ app.*.symbols
 
 # Web related
 lib/generated_plugin_registrant.dart
+GoogleService-Info.plist
 
 
 ios/Podfile.lock

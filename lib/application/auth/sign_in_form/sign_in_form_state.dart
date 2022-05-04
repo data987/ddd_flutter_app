@@ -5,7 +5,7 @@ class SignInFormState with _$SignInFormState {
   const factory SignInFormState({
     required EmailAddress emailAddress,
     required Password password,
-    required bool showErrorMessage,
+    required AutovalidateMode showErrorMessage,
     required bool isSubmitting,
     required Option<Either<AuthFailure, Unit>> authFailureOrSuccess,
   }) = _SignInFormState;
@@ -13,7 +13,7 @@ class SignInFormState with _$SignInFormState {
   factory SignInFormState.initial() => SignInFormState(
         emailAddress: EmailAddress(''),
         password: Password(''),
-        showErrorMessage: false,
+        showErrorMessage: AutovalidateMode.disabled,
         isSubmitting: false,
         authFailureOrSuccess: none(),
       );

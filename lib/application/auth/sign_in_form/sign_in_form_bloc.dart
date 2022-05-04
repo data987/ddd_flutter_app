@@ -1,17 +1,19 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:ddd_flutter_app/domain/auth/auth_failure.dart';
+import 'package:ddd_flutter_app/domain/auth/i_auth_facade.dart';
+import 'package:ddd_flutter_app/domain/auth/value_object.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-
-import '../../../domain/auth/i_auth_facade.dart';
-import '../../../domain/auth/value_object.dart';
+import 'package:injectable/injectable.dart';
 
 part 'sign_in_form_event.dart';
 part 'sign_in_form_state.dart';
 part 'sign_in_form_bloc.freezed.dart';
 
+@injectable
 class SignInFormBloc extends Bloc<SignInFormEvent, SignInFormState> {
   final IAuthFacade _authFacade;
 
@@ -20,50 +22,72 @@ class SignInFormBloc extends Bloc<SignInFormEvent, SignInFormState> {
     on<PasswordChanged>(_onPasswordChanged);
     on<RegisterWithEmail>(
       (event, emit) => _performEmailAndPasswordLogic(
-          event, emit, _authFacade.registerWithEmailAndPassword),
+        event,
+        emit,
+        _authFacade.registerWithEmailAndPassword,
+      ),
     );
     on<SignInWithEmail>(
       (event, emit) => _performEmailAndPasswordLogic(
-          event, emit, _authFacade.signInWithEmailAndPassword),
+        event,
+        emit,
+        _authFacade.signInWithEmailAndPassword,
+      ),
     );
     on<SignInWithGmail>(_onSignInWithGmail);
   }
 
   FutureOr<void> _onEmailChanged(
-      EmailChanged event, Emitter<SignInFormState> emit) {
-    emit(state.copyWith(
-      emailAddress: EmailAddress(event.email),
-      authFailureOrSuccess: none(),
-    ));
+    EmailChanged event,
+    Emitter<SignInFormState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        emailAddress: EmailAddress(event.email),
+        authFailureOrSuccess: none(),
+      ),
+    );
   }
 
   FutureOr<void> _onPasswordChanged(
-      PasswordChanged event, Emitter<SignInFormState> emit) {
-    emit(state.copyWith(
-      password: Password(event.password),
-      authFailureOrSuccess: none(),
-    ));
+    PasswordChanged event,
+    Emitter<SignInFormState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        password: Password(event.password),
+        authFailureOrSuccess: none(),
+      ),
+    );
   }
 
   FutureOr<void> _onSignInWithGmail(
-      SignInWithGmail event, Emitter<SignInFormState> emit) async {
-    emit(state.copyWith(
-      isSubmitting: true,
-      authFailureOrSuccess: none(),
-    ));
+    SignInWithGmail event,
+    Emitter<SignInFormState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        isSubmitting: true,
+        authFailureOrSuccess: none(),
+      ),
+    );
     final Either<AuthFailure, Unit> signInResponse =
         await _authFacade.signInWithGoogle();
-    emit(state.copyWith(
-      isSubmitting: false,
-      authFailureOrSuccess: some(signInResponse),
-    ));
+    emit(
+      state.copyWith(
+        isSubmitting: false,
+        authFailureOrSuccess: some(signInResponse),
+      ),
+    );
   }
 
   FutureOr<void> _performEmailAndPasswordLogic(
     SignInFormEvent event,
     Emitter<SignInFormState> emit,
-    Future<Either<AuthFailure, Unit>> Function(
-            {required EmailAddress emailAddress, required Password password})
+    Future<Either<AuthFailure, Unit>> Function({
+      required EmailAddress emailAddress,
+      required Password password,
+    })
         forwardedCall,
   ) async {
     late Either<AuthFailure, Unit> requestResponse;
@@ -71,20 +95,24 @@ class SignInFormBloc extends Bloc<SignInFormEvent, SignInFormState> {
     final bool isPasswordValid = state.password.isValid();
 
     if (isEmailValid && isPasswordValid) {
-      emit(state.copyWith(
-        isSubmitting: true,
-        authFailureOrSuccess: none(),
-      ));
+      emit(
+        state.copyWith(
+          isSubmitting: true,
+          authFailureOrSuccess: none(),
+        ),
+      );
 
       requestResponse = await forwardedCall(
         emailAddress: state.emailAddress,
         password: state.password,
       );
     }
-    emit(state.copyWith(
-      isSubmitting: false,
-      showErrorMessage: true,
-      authFailureOrSuccess: optionOf(requestResponse),
-    ));
+    emit(
+      state.copyWith(
+        isSubmitting: false,
+        showErrorMessage: AutovalidateMode.always,
+        authFailureOrSuccess: optionOf(null),
+      ),
+    );
   }
 }

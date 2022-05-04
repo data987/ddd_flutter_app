@@ -768,7 +768,7 @@ abstract class SignInWithGmail implements SignInFormEvent {
 mixin _$SignInFormState {
   EmailAddress get emailAddress => throw _privateConstructorUsedError;
   Password get password => throw _privateConstructorUsedError;
-  bool get showErrorMessage => throw _privateConstructorUsedError;
+  AutovalidateMode get showErrorMessage => throw _privateConstructorUsedError;
   bool get isSubmitting => throw _privateConstructorUsedError;
   Option<Either<AuthFailure, Unit>> get authFailureOrSuccess =>
       throw _privateConstructorUsedError;
@@ -786,7 +786,7 @@ abstract class $SignInFormStateCopyWith<$Res> {
   $Res call(
       {EmailAddress emailAddress,
       Password password,
-      bool showErrorMessage,
+      AutovalidateMode showErrorMessage,
       bool isSubmitting,
       Option<Either<AuthFailure, Unit>> authFailureOrSuccess});
 }
@@ -820,7 +820,7 @@ class _$SignInFormStateCopyWithImpl<$Res>
       showErrorMessage: showErrorMessage == freezed
           ? _value.showErrorMessage
           : showErrorMessage // ignore: cast_nullable_to_non_nullable
-              as bool,
+              as AutovalidateMode,
       isSubmitting: isSubmitting == freezed
           ? _value.isSubmitting
           : isSubmitting // ignore: cast_nullable_to_non_nullable
@@ -843,7 +843,7 @@ abstract class _$SignInFormStateCopyWith<$Res>
   $Res call(
       {EmailAddress emailAddress,
       Password password,
-      bool showErrorMessage,
+      AutovalidateMode showErrorMessage,
       bool isSubmitting,
       Option<Either<AuthFailure, Unit>> authFailureOrSuccess});
 }
@@ -879,7 +879,7 @@ class __$SignInFormStateCopyWithImpl<$Res>
       showErrorMessage: showErrorMessage == freezed
           ? _value.showErrorMessage
           : showErrorMessage // ignore: cast_nullable_to_non_nullable
-              as bool,
+              as AutovalidateMode,
       isSubmitting: isSubmitting == freezed
           ? _value.isSubmitting
           : isSubmitting // ignore: cast_nullable_to_non_nullable
@@ -907,7 +907,7 @@ class _$_SignInFormState implements _SignInFormState {
   @override
   final Password password;
   @override
-  final bool showErrorMessage;
+  final AutovalidateMode showErrorMessage;
   @override
   final bool isSubmitting;
   @override
@@ -953,7 +953,7 @@ abstract class _SignInFormState implements SignInFormState {
   const factory _SignInFormState(
       {required final EmailAddress emailAddress,
       required final Password password,
-      required final bool showErrorMessage,
+      required final AutovalidateMode showErrorMessage,
       required final bool isSubmitting,
       required final Option<Either<AuthFailure, Unit>>
           authFailureOrSuccess}) = _$_SignInFormState;
@@ -963,7 +963,7 @@ abstract class _SignInFormState implements SignInFormState {
   @override
   Password get password => throw _privateConstructorUsedError;
   @override
-  bool get showErrorMessage => throw _privateConstructorUsedError;
+  AutovalidateMode get showErrorMessage => throw _privateConstructorUsedError;
   @override
   bool get isSubmitting => throw _privateConstructorUsedError;
   @override
