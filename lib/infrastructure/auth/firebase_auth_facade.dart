@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:ddd_flutter_app/domain/auth/auth_failure.dart';
 import 'package:ddd_flutter_app/domain/auth/i_auth_facade.dart';
-import 'package:ddd_flutter_app/domain/auth/user.dart' as myUser;
+import 'package:ddd_flutter_app/domain/auth/user.dart' as my_user;
 import 'package:ddd_flutter_app/domain/auth/value_object.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
@@ -19,11 +19,11 @@ class FirebaseAuhtFacade implements IAuthFacade {
   );
 
   @override
-  Option<myUser.User> getSignedInUser() {
+  Option<my_user.User> getSignedInUser() {
     final user = _firebaseAuth.currentUser;
     if (user != null) {
-      optionOf(
-        myUser.User(
+      return some(
+        my_user.User(
           id: UniqueId.fromUniqueString(
             user.uid,
           ),

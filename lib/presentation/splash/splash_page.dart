@@ -14,12 +14,16 @@ class SplashPage extends StatelessWidget {
           initial: (_) {},
           authenticated: (_) {
             print("I'm authenticated");
+            // context.router.replaceNamed('/sign-in-page');
           },
-          unauthenticated: (_) => context.router.replaceNamed('sign-in-page'),
+          unauthenticated: (_) {
+            // print('I am unauthenticated');
+            context.router.replaceNamed('sign-in-page');
+          },
         );
       },
       child: const Scaffold(
-        body: CircularProgressIndicator(),
+        body: Center(child: CircularProgressIndicator()),
       ),
     );
   }
