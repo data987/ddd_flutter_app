@@ -1,4 +1,5 @@
 import 'package:ddd_flutter_app/application/auth/sign_in_form/sign_in_form_bloc.dart';
+import 'package:ddd_flutter_app/domain/auth/auth_failure.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,17 +13,7 @@ class SignInForm extends StatelessWidget {
         state.authFailureOrSuccess.fold(
           () {},
           (either) => either.fold(
-            (failure) {
-              print(
-                failure.map(
-                  cancelledByUser: (_) => 'Cancel by the user',
-                  serverError: (_) => 'There was an error',
-                  emailAlreadyInUse: (_) => 'This email is already in use',
-                  invalidEmailAndPasswordCombination: (_) =>
-                      'Invalid email and password',
-                ),
-              );
-            },
+            (failure) => _showFailureMessage(context, failure),
             (_) {},
           ),
         );
@@ -121,11 +112,35 @@ class SignInForm extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-              )
+              ),
+              if (state.isSubmitting) ...[
+                const SizedBox(height: 8),
+                const LinearProgressIndicator()
+              ]
             ],
           ),
         );
       },
+    );
+  }
+
+  void _showFailureMessage(BuildContext context, AuthFailure failure) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          failure.map(
+            cancelledByUser: (_) => 'Cancel by the user',
+            serverError: (_) => 'There was an error',
+            emailAlreadyInUse: (_) => 'This email is already in use',
+            invalidEmailAndPasswordCombination: (_) =>
+                'Invalid email and password',
+          ),
+        ),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {},
+        ),
+      ),
     );
   }
 }

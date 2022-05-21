@@ -1,25 +1,38 @@
-import 'package:ddd_flutter_app/presentation/sign_in/sign_in_page.dart';
+import 'package:ddd_flutter_app/application/auth/auth_bloc.dart';
+import 'package:ddd_flutter_app/injection.dart';
+import 'package:ddd_flutter_app/presentation/routes/router.gr.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppWidget extends StatelessWidget {
-  // This widget is the root of your application.
+  final _appRouter = AppRouter();
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'DDD Flutter App',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData.light().copyWith(
-        primaryColor: Colors.blueAccent[300],
-        colorScheme: ThemeData.light().colorScheme.copyWith(
-              secondary: Colors.red[400],
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              getIt<AuthBloc>()..add(const AuthEvent.authCheckRequested()),
+        ),
+      ],
+      child: MaterialApp.router(
+        title: 'DDD Flutter App',
+        debugShowCheckedModeBanner: false,
+        routerDelegate: _appRouter.delegate(),
+        routeInformationParser: _appRouter.defaultRouteParser(),
+        theme: ThemeData.light().copyWith(
+          primaryColor: Colors.blueAccent[300],
+          colorScheme: ThemeData.light().colorScheme.copyWith(
+                secondary: Colors.red[400],
+              ),
+          inputDecorationTheme: InputDecorationTheme(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
             ),
-        inputDecorationTheme: InputDecorationTheme(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
           ),
         ),
       ),
-      home: const SignInPage(),
     );
   }
 }

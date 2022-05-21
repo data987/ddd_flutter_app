@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:ddd_flutter_app/domain/auth/auth_failure.dart';
 import 'package:ddd_flutter_app/domain/auth/i_auth_facade.dart';
+import 'package:ddd_flutter_app/domain/auth/user.dart' as my_user;
 import 'package:ddd_flutter_app/domain/auth/value_object.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
@@ -18,6 +19,21 @@ class FirebaseAuhtFacade implements IAuthFacade {
   );
 
   @override
+  Option<my_user.User> getSignedInUser() {
+    final user = _firebaseAuth.currentUser;
+    if (user != null) {
+      return some(
+        my_user.User(
+          id: UniqueId.fromUniqueString(
+            user.uid,
+          ),
+        ),
+      );
+    }
+    return none();
+  }
+
+  @override
   Future<Either<AuthFailure, Unit>> registerWithEmailAndPassword({
     required EmailAddress emailAddress,
     required Password password,
@@ -31,7 +47,7 @@ class FirebaseAuhtFacade implements IAuthFacade {
       );
       return right(unit);
     } on PlatformException catch (e) {
-      if (e.code == 'ERROR_EMAIL_ALREADY_IN_USE') {
+      if (e.code == 'email-already-in-use') {
         return left(const AuthFailure.emailAlreadyInUse());
       } else {
         return left(const AuthFailure.serverError());
@@ -83,4 +99,10 @@ class FirebaseAuhtFacade implements IAuthFacade {
       return left(const AuthFailure.serverError());
     }
   }
+
+  @override
+  Future<void> signOut() => Future.wait([
+        _googleSignIn.signOut(),
+        _firebaseAuth.signOut(),
+      ]);
 }
